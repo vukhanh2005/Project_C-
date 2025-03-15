@@ -1,0 +1,1 @@
+g++ src\\main.cpp -o bin\\main.exe -Iinclude -Llib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
