@@ -64,16 +64,14 @@ void deleteBook(ListBook& list, string id)
 }
 bool isHaveBook(ListBook list, string id)
 {
-    Node* p = list.head;
-    while (p != NULL)
+    for(Node* k = list.head; k != NULL; k = k->next)
     {
-        if (p->data.getId() == id)
+        if(k->data.getId() == id)
         {
             return true;
         }
-        p = p->next;
+        else return false;
     }
-    return false;
 }
 void changeStatus(ListBook& list, string id)
 {

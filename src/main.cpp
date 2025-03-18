@@ -292,16 +292,21 @@ void windowPhieuMuon()
         line1.setFillColor(sf::Color::Blue);
         //Line2
         sf::RectangleShape line2(sf::Vector2f(1, 100));
-        line2.setPosition({200, 0});
+        line2.setPosition({100, 0});
         line2.setFillColor(sf::Color::Blue);
         //Line3
         sf::RectangleShape line3(sf::Vector2f(1, 100));
-        line3.setPosition({500, 0});
+        line3.setPosition({250, 0});
         line3.setFillColor(sf::Color::Blue);
         //Line4
         sf::RectangleShape line4(sf::Vector2f(1, 100));
-        line4.setPosition({800, 0});
+        line4.setPosition({400, 0});
         line4.setFillColor(sf::Color::Blue);
+        //Line5
+        //Line4
+        sf::RectangleShape line5(sf::Vector2f(1, 100));
+        line5.setPosition({500, 0});
+        line5.setFillColor(sf::Color::Blue);
         //Text1
         sf::Font font;
         if(!font.openFromFile("Arial.ttf"))
@@ -312,33 +317,41 @@ void windowPhieuMuon()
         sf::Text text1(font, "ID", 20);
         float x1 = text1.getGlobalBounds().size.x;
         float y1 = text1.getGlobalBounds().size.y;
-        text1.setPosition({100 - x1/2, 50 - y1/2});
+        text1.setPosition({50 - x1/2, 50 - y1/2});
         //Text2
         sf::Text text2(font, "NGAY MUON", 20);
         float x2 = text2.getGlobalBounds().size.x;
         float y2 = text2.getGlobalBounds().size.y;
-        text2.setPosition({350 - x2/2, 50 - y2/2});
+        text2.setPosition({175 - x2/2, 50 - y2/2});
         //Text3
         sf::Text text3(font, "NGAY TRA", 20);
         float x3 = text3.getGlobalBounds().size.x;
         float y3 = text3.getGlobalBounds().size.y;
-        text3.setPosition({650 - x3/2, 50 - y3/2});
+        text3.setPosition({325 - x3/2, 50 - y3/2});
         //Text4
         sf::Text text4(font, "STATUS", 20);
         float x4 = text4.getGlobalBounds().size.x;
         float y4 = text4.getGlobalBounds().size.y;
-        text4.setPosition({900 - x4/2, 50 - y4/2});
+        text4.setPosition({450 - x4/2, 50 - y4/2});
+        //Text5
+        sf::Text text5(font, "LIST ID", 20);
+        float x5 = text5.getGlobalBounds().size.x;
+        float y5 = text5.getGlobalBounds().size.y;
+        text5.setPosition({750 - x5/2, 50 - y5/2});
         //Vector
         std::vector<sf::RectangleShape> lines;
         std::vector<sf::Text> texts;
         //Push
+        lines.push_back(line1);
         lines.push_back(line2);
         lines.push_back(line3);
         lines.push_back(line4);
+        lines.push_back(line5);
         texts.push_back(text1);
         texts.push_back(text2);
         texts.push_back(text3);
         texts.push_back(text4);
+        texts.push_back(text5);
         //Main loop
         while(windowPM.isOpen())
         {
@@ -360,7 +373,73 @@ void windowPhieuMuon()
             {
                 windowPM.draw(text);
             }
-            windowPM.draw(line1);
+            //Data
+            std::vector<sf::Text> drawPhieuMuon;
+            for (int i = 0; i < listPhieuMuon.size(); i++)
+            {
+                PhieuMuon phieuMuon = listPhieuMuon[i];
+                std::vector<std::string> phieuMuonInfo = {
+                    phieuMuon.getID(),
+                    phieuMuon.getNgayMuon(),
+                    phieuMuon.getNgayTra(),
+                    phieuMuon.getStatus() == 1 ? "NO" : "YES",
+                    ""};
+
+                for (auto idSach : phieuMuon.listIdSach)
+                {
+                    phieuMuonInfo[4] += idSach + " ";
+                }
+
+                for (size_t j = 0; j < phieuMuonInfo.size(); j++)
+                {
+                    float jx, jy;
+                    sf::Text text(font, phieuMuonInfo[j], 15);
+                    if (j == 0)
+                    {
+                        jx = text.getGlobalBounds().size.x;
+                        jy = text.getGlobalBounds().size.y;
+                        text.setPosition(sf::Vector2f({50 - jx / 2, 120 + (float)(i * 20) - jy / 2}));
+                        text.setFillColor(sf::Color::White);
+                        drawPhieuMuon.push_back(text);
+                    }
+                    if (j == 1)
+                    {
+                        jx = text.getGlobalBounds().size.x;
+                        jy = text.getGlobalBounds().size.y;
+                        text.setPosition(sf::Vector2f({175 - jx / 2, 120 + (float)(i * 20) - jy / 2}));
+                        text.setFillColor(sf::Color::White);
+                        drawPhieuMuon.push_back(text);
+                    }
+                    if (j == 2)
+                    {
+                        jx = text.getGlobalBounds().size.x;
+                        jy = text.getGlobalBounds().size.y;
+                        text.setPosition(sf::Vector2f({325 - jx / 2, 120 + (float)(i * 20) - jy / 2}));
+                        text.setFillColor(sf::Color::White);
+                        drawPhieuMuon.push_back(text);
+                    }
+                    if (j == 3)
+                    {
+                        jx = text.getGlobalBounds().size.x;
+                        jy = text.getGlobalBounds().size.y;
+                        text.setPosition(sf::Vector2f({450 - jx / 2, 120 + (float)(i * 20) - jy / 2}));
+                        text.setFillColor(sf::Color::White);
+                        drawPhieuMuon.push_back(text);
+                    }
+                    if (j == 4)
+                    {
+                        jx = text.getGlobalBounds().size.x;
+                        jy = text.getGlobalBounds().size.y;
+                        text.setPosition(sf::Vector2f({750 - jx / 2, 120 + (float)(i * 20) - jy / 2}));
+                        text.setFillColor(sf::Color::White);
+                        drawPhieuMuon.push_back(text);
+                    }
+                }
+            }
+            for (auto a : drawPhieuMuon)
+            {
+                windowPM.draw(a);
+            }
             windowPM.display();
         }
     }
@@ -374,6 +453,12 @@ void menu1()
     }
     if(isInMenu1 == true)
     {
+        cout << "LIST ID in Lib: ";
+        for(Node* k = danhsach.head; k != NULL; k = k->next)
+        {
+            cout << k->data.getId() << " ";
+        }
+        cout << endl;
         do
         {
             cout << endl;
@@ -419,6 +504,7 @@ void menu1()
                     PhieuMuon phieuMuon;
                     int x;
                     cout << "Nhap so luong sach muon muon: "; cin >> x;
+                    cin.ignore();
                     std::vector<string> listIdSach;
                     cout << "Nhap id sach muon muon: "; 
                     for(int i = 0; i < x; i++)
@@ -427,7 +513,11 @@ void menu1()
                         getline(cin, id);
                         listIdSach.push_back(id);
                     }
-                    std::cout << listIdSach.size();
+                    for(auto test : listIdSach)
+                    {
+                        cout << test << " ";
+                    }
+                    cout << endl;
                     //Kiem tra xem co sach do trong list khong
                     bool isChecked = true;
                     for(auto idSach : listIdSach)
@@ -441,6 +531,7 @@ void menu1()
                     {
                         cout << "Khong co sach trong thu vien" << endl;
                         break;
+                        cout << "AAAAAA" << endl;
                     }
                     phieuMuon.listIdSach = listIdSach;
                     phieuMuon.nhap();
@@ -460,11 +551,12 @@ void menu1()
                     {
                         oFile << idSach << endl;
                     }
+                    oFile.close();
                     //Cập nhật lại thông tin các sách vào thuviensach(do thay đổi status của sách)
+                    oFile.open("..\\Data\\thuviensach.txt", ios::app);
                     oFile.clear();
                     for(Node* k = danhsach.head; k != NULL; k = k->next)
                     {
-                        oFile.open("..\\Data\\thuviensach.txt", ios::app);
                         oFile << k->data.getId() << endl;
                         oFile << k->data.getName() << endl;
                         oFile << k->data.getAuthor() << endl;
