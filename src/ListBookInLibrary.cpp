@@ -70,8 +70,8 @@ bool isHaveBook(ListBook list, string id)
         {
             return true;
         }
-        else return false;
     }
+    return false;
 }
 void changeStatus(ListBook& list, string id)
 {
@@ -82,4 +82,15 @@ void changeStatus(ListBook& list, string id)
             k->data.setStatus(!k->data.getStatus());
         }
     }
+}
+bool isHaveThisIdInList(ListBook list, string id)
+{
+    for(Node* k = list.head; k != NULL; k = k->next)
+    {
+        if(k->data.getId() == id)
+        {
+            return true;
+        }
+    }
+    return false;
 }

@@ -42,3 +42,6 @@ void PhieuMuon::setStatus(bool status)
 {
     this->status = status;
 }
+PhieuMuon::PhieuMuon(string id, string ngayMuon, string ngayTra, bool status, vector<string> listIdSach)
+    : id(id), ngayMuon(ngayMuon), ngayTra(ngayTra), status(status), listIdSach(listIdSach) {}
+PhieuMuon::PhieuMuon(){}

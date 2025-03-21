@@ -13,6 +13,7 @@
 #include <fstream>
 using namespace std;
 int count = 0;
+int soSachDaMuon = 0;
 std::atomic<bool> isInMenu1;
 std::atomic<bool> isLoginSegment(true);
 std::atomic<bool> isPhieuMuonWindowTurnOn(false);
@@ -66,7 +67,7 @@ void mainWindow()
     }
     if(isMainWindowTurnOn)
     {
-        sf::RenderWindow window(sf::VideoMode({1000, 1000}), "LIBRARY", sf::Style::Close || sf::Style::Titlebar);
+        sf::RenderWindow window(sf::VideoMode({1000, 1000}), "LIBRARY", sf::Style::Close);
 
         //Font
         sf::Font font;
@@ -506,9 +507,9 @@ void menu1()
                     cout << "Nhap so luong sach muon muon: "; cin >> x;
                     cin.ignore();
                     std::vector<string> listIdSach;
-                    cout << "Nhap id sach muon muon: "; 
                     for(int i = 0; i < x; i++)
                     {
+                        cout << "Nhap id sach thu " << i + 1 << ": "; 
                         string id;
                         getline(cin, id);
                         listIdSach.push_back(id);
@@ -541,8 +542,10 @@ void menu1()
                         changeStatus(danhsach, idSach);
                     }
                     cout << "Muon sach va tao phieu muon thanh cong(Xem trong file sachdamuon.txt)" << endl;
+                    soSachDaMuon += x;
                     //Ghi ra file sachdamuon.txt danh sách các phiếu mượn
                     oFile.open("..\\Data\\sachdamuon.txt", ios::app);
+                    oFile.clear();
                     oFile << phieuMuon.getID() << endl;
                     oFile << phieuMuon.getNgayMuon() << endl;
                     oFile << phieuMuon.getNgayTra() << endl;
@@ -774,20 +777,28 @@ void menu2()
                         Sach sach;
                         sach.nhap();
                         std::lock_guard<std::mutex> lock(mtx);
+                        if(isHaveThisIdInList(danhsach, sach.getId()))
+                        {
+                            cout << "KHONG THE TRUNG ID" << endl;
+                            break;
+                        }
                         addBookToList(danhsach, sach);
+                        cout << "Them thanh cong" << endl;
                     }
                     //Ghi ra file
+                    oFile.open("..\\Data\\thuviensach.txt", ios::app);
+                    oFile.clear();
                     for(Node* k = danhsach.head; k != NULL; k = k->next)
                     {
-                        oFile.open("..\\Data\\thuviensach.txt", ios::app);
                         oFile << k->data.getId() << endl;
                         oFile << k->data.getName() << endl;
                         oFile << k->data.getAuthor() << endl;
                         oFile << k->data.getType() << endl;
                         oFile << k->data.getPrice() << endl;
                         oFile << k->data.getStatus() << endl;
-                        oFile.close();
                     }
+                    oFile.close();
+                    cout << "Da ghi ra file" << endl;
                     break;
                 }
                 case 2:
@@ -843,6 +854,26 @@ int main()
         Sach sach(id, name, author, type, price, status);
         addBookToList(danhsach, sach);
     }
+    iFile.close();
+    iFile.open("Data\\sachdamuon.txt");
+    while(true)
+    {
+        string id, ngayMuon, ngayTra;
+        std::vector<string> listID;
+        bool status;
+        if (!getline(iFile, id)) break;      // Kiểm tra đọc thành công
+        if (!getline(iFile, ngayMuon)) break;
+        if (!getline(iFile, ngayTra)) break;
+        for(int i = 0; i < soSachDaMuon; i++)
+        {
+            getline(iFile, listID[i]);
+        }
+        if (!(iFile >> status)) break;       // Đọc số bool
+        iFile.ignore();
+        PhieuMuon temp(id, ngayMuon, ngayTra, status, listID);
+        listPhieuMuon.push_back(temp);
+    }
+    
     for(Node* k = danhsach.head; k != NULL; k = k->next)
     {
         count = count + 1;
