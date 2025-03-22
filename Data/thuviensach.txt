@@ -21,7 +21,7 @@ Sach D
 Phong Ma
 Type E
 19999
-0
+1
 H1001
 Nig
 La

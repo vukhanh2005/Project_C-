@@ -153,15 +153,15 @@ void mainWindow()
         texts.push_back(text4);
         texts.push_back(text5);
         texts.push_back(text6);
-        //Data
-        std::vector<Sach> dataOfBookInLibs;
-        for(Node* k = danhsach.head; k != NULL; k = k->next)
-        {
-            dataOfBookInLibs.push_back(k->data);
-        }
         //Main loop
         while(window.isOpen())
         {
+            //Data
+            std::vector<Sach> dataOfBookInLibs;
+            for(Node* k = danhsach.head; k != NULL; k = k->next)
+            {
+                dataOfBookInLibs.push_back(k->data);
+            }
             while(const std::optional event = window.pollEvent())
             {
                 if(event->is<sf::Event::Closed>())
@@ -712,9 +712,15 @@ void searchWindow()
     texts.push_back(text4);
     texts.push_back(text5);
     texts.push_back(text6);
+    std::vector<Sach> dataBookInSearchList;
     //Main loop
     while(searchWindow.isOpen())
     {
+        //Push Data
+        for(Node* k = searchList.head; k != NULL; k = k->next)
+        {
+            dataBookInSearchList.push_back(k->data);
+        }
         while(const std::optional event = searchWindow.pollEvent())
         {
             if(event->is<sf::Event::Closed>())
@@ -750,6 +756,77 @@ void searchWindow()
             searchWindow.draw(text);
         }
         searchWindow.draw(line);
+        //Data
+        std::vector<sf::Text> drawBooks;
+        //Vẽ
+        for (int i = 0; i < dataBookInSearchList.size(); i++)
+        {
+            Sach book = dataBookInSearchList[i];
+
+            std::vector<std::string> bookInfo =
+            {
+                book.getId(),
+                book.getName(),
+                book.getAuthor(),
+                book.getType(),
+                std::to_string(book.getPrice()),
+                book.getStatus() == 1 ? "Cant" : "Can"
+            };
+
+            for (size_t j = 0; j < bookInfo.size(); j++)
+            {
+                float jx, jy;
+                sf::Text text(font, bookInfo[j], 15);
+                if(j == 0)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({50 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 1)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({200 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 2)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({400 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 3)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({600 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 4)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({800 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 5)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({950 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+            }
+        }
         searchWindow.display();
     }
 }
@@ -891,7 +968,6 @@ int main()
     std::thread t3(searchWindow);
     std::thread t4(menu1);
     std::thread t5(menu2);
-
     t0.join();
     t1.join();
     t2.join();
