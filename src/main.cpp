@@ -69,7 +69,7 @@ void mainWindow()
     if(isMainWindowTurnOn)
     {
         sf::RenderWindow window(sf::VideoMode({1000, 1000}), "LIBRARY", sf::Style::Close);
-
+        window.setFramerateLimit(30);
         //Font
         sf::Font font;
         if(!font.openFromFile("Arial.ttf"))
@@ -286,6 +286,7 @@ void windowPhieuMuon()
     if(isPhieuMuonWindowTurnOn)
     {
         sf::RenderWindow windowPM(sf::VideoMode({1000, 1000}), "Phieu muon", sf::Style::Close || sf::Style::Titlebar);
+        windowPM.setFramerateLimit(30);
         //---Init Table-----
         //Line1
         sf::RectangleShape line1(sf::Vector2f(1000, 1));
@@ -634,7 +635,7 @@ void menu1()
 void searchWindow()
 {
     sf::RenderWindow searchWindow(sf::VideoMode({1000, 1000}), "SEARCH RESULT", sf::Style::Close || sf::Style::Titlebar);
-
+    searchWindow.setFramerateLimit(30);
     //Font
     sf::Font font;
     if(!font.openFromFile("Arial.ttf"))
