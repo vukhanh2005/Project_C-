@@ -21,6 +21,7 @@ std::atomic<bool> isMainWindowTurnOn(false);
 std::atomic<bool> isSearchWindowTurnOn(false);
 std::mutex mtx;
 ListBook danhsach;
+ListBook searchList;
 std::vector<PhieuMuon> listPhieuMuon;
 std::vector<DocGia> listDocGia;
 int choice;
@@ -153,10 +154,10 @@ void mainWindow()
         texts.push_back(text5);
         texts.push_back(text6);
         //Data
-        std::vector<Sach> datas;
+        std::vector<Sach> dataOfBookInLibs;
         for(Node* k = danhsach.head; k != NULL; k = k->next)
         {
-            datas.push_back(k->data);
+            dataOfBookInLibs.push_back(k->data);
         }
         //Main loop
         while(window.isOpen())
@@ -176,7 +177,7 @@ void mainWindow()
                     }
                     if(keyPressed->scancode == sf::Keyboard::Scancode::K)
                     {
-                        std::cout << datas.size() << endl;
+                        std::cout << dataOfBookInLibs.size() << endl;
                     }
                 }
             }
@@ -194,12 +195,11 @@ void mainWindow()
             window.draw(line);
             //Vẽ dữ liệu cho bảng
             //--Tạo vector lưu dữ liệu cho tất cả sách (mỗi sách có 6 text)
-            int n = datas.size() * 6;
             std::vector<sf::Text> drawBooks;
             //Vẽ
-            for (int i = 0; i < datas.size(); i++)
+            for (int i = 0; i < dataOfBookInLibs.size(); i++)
             {
-                Sach book = datas[i];
+                Sach book = dataOfBookInLibs[i];
     
                 std::vector<std::string> bookInfo = {
                     book.getId(),
@@ -470,7 +470,8 @@ void menu1()
             cout << "4.Tim sach theo the loai" << endl;
             cout << "5.Tim sach theo ten sach" << endl;
             cout << "6.Clear all data" << endl;
-            cout << "7.Ket thuc chuong trinh" << endl;
+            cout << "7.So sach da muon" << endl;
+            cout << "8.Ket thuc chuong trinh" << endl;
             cout << "Nhap lua chon: ";
             cin >> choice;
             switch (choice)
@@ -542,10 +543,9 @@ void menu1()
                         changeStatus(danhsach, idSach);
                     }
                     cout << "Muon sach va tao phieu muon thanh cong(Xem trong file sachdamuon.txt)" << endl;
-                    soSachDaMuon += x;
+                    soSachDaMuon ++;
                     //Ghi ra file sachdamuon.txt danh sách các phiếu mượn
                     oFile.open("..\\Data\\sachdamuon.txt", ios::app);
-                    oFile.clear();
                     oFile << phieuMuon.getID() << endl;
                     oFile << phieuMuon.getNgayMuon() << endl;
                     oFile << phieuMuon.getNgayTra() << endl;
@@ -556,8 +556,7 @@ void menu1()
                     }
                     oFile.close();
                     //Cập nhật lại thông tin các sách vào thuviensach(do thay đổi status của sách)
-                    oFile.open("..\\Data\\thuviensach.txt", ios::app);
-                    oFile.clear();
+                    oFile.open("..\\Data\\thuviensach.txt", ios::trunc);
                     for(Node* k = danhsach.head; k != NULL; k = k->next)
                     {
                         oFile << k->data.getId() << endl;
@@ -566,7 +565,6 @@ void menu1()
                         oFile << k->data.getType() << endl;
                         oFile << k->data.getPrice() << endl;
                         oFile << k->data.getStatus() << endl;
-                        oFile.close();
                     }
                     oFile.close();
                     break;
@@ -617,13 +615,19 @@ void menu1()
                 }
                 case 7:
                 {
-                    system("exit");
+                    cout << "Tong so phieu muon la: " << soSachDaMuon << endl;
+                    break;
+                }
+                case 8:
+                {
+                    cout << "Ket thuc chuong trinh" << endl;
                     break;
                 }
                 default:
+                    cout << "Lua chon khong hop le" << endl;
                     break;
             }
-        } while(choice != 7);
+        } while(choice != 8);
     }
 }
 //Luồng 3
@@ -716,13 +720,14 @@ void searchWindow()
             if(event->is<sf::Event::Closed>())
             {
                 searchWindow.close();
+                isMainWindowTurnOn = true;
             }
             else if(auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
                 if(keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 {
                     searchWindow.close();
-                    isMainWindowTurnOn = false;
+                    isMainWindowTurnOn = true;
                 }
             }
         }
@@ -786,7 +791,7 @@ void menu2()
                         cout << "Them thanh cong" << endl;
                     }
                     //Ghi ra file
-                    oFile.open("..\\Data\\thuviensach.txt", ios::app);
+                    oFile.open("..\\Data\\thuviensach.txt", ios::trunc);
                     oFile.clear();
                     for(Node* k = danhsach.head; k != NULL; k = k->next)
                     {

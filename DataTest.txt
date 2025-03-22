@@ -15,16 +15,10 @@ Sach C
 Yi Long Ma
 Type Dic
 19999
-1
+0
 H4
 Sach D
 Phong Ma
 Type E
 19999
-0
-H1001
-Nig
-La
-OKOK
-222222
 0
