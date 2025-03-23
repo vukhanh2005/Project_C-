@@ -24,3 +24,4 @@ void deleteBook(ListBook& list, string id);
 bool isHaveBook(ListBook list, string id);
 void changeStatus(ListBook& list, string id);
 bool isHaveThisIdInList(ListBook list, string id);
+Sach* findBookByID(string id);

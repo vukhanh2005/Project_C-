@@ -12,7 +12,6 @@ class PhieuMuon
     string ngayMuon;
     string ngayTra;
     bool status; //1.Chua tra 0.Da tra
-    
     public:
         PhieuMuon();
         PhieuMuon(string id, string ngayMuon, string ngayTra, bool status, vector<string> listIdSach);

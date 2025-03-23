@@ -94,3 +94,14 @@ bool isHaveThisIdInList(ListBook list, string id)
     }
     return false;
 }
+Sach* findBookByID(ListBook list, string id)
+{
+    for(Node* k = list.head; k != NULL; k = k->next)
+    {
+        if(k->data.getId() == id)
+        {
+            return &(k->data);
+        }
+    }
+    return NULL;
+}

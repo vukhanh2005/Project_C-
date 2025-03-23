@@ -69,7 +69,8 @@ void mainWindow()
     if(isMainWindowTurnOn)
     {
         sf::RenderWindow window(sf::VideoMode({1000, 1000}), "LIBRARY", sf::Style::Close);
-        window.setFramerateLimit(30);
+        
+        window.setFramerateLimit(10);
         //Font
         sf::Font font;
         if(!font.openFromFile("Arial.ttf"))
@@ -285,8 +286,8 @@ void windowPhieuMuon()
     
     if(isPhieuMuonWindowTurnOn)
     {
-        sf::RenderWindow windowPM(sf::VideoMode({1000, 1000}), "Phieu muon", sf::Style::Close || sf::Style::Titlebar);
-        windowPM.setFramerateLimit(30);
+        sf::RenderWindow windowPM(sf::VideoMode({1000, 1000}), "Phieu muon", sf::Style::Close);
+        windowPM.setFramerateLimit(10);
         //---Init Table-----
         //Line1
         sf::RectangleShape line1(sf::Vector2f(1000, 1));
@@ -475,6 +476,13 @@ void menu1()
             cout << "8.Ket thuc chuong trinh" << endl;
             cout << "Nhap lua chon: ";
             cin >> choice;
+            if (cin.fail())
+            {
+                cin.clear(); // Clear the error flag
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+                cout << "Lua chon khong hop le. Vui long nhap lai." << endl;
+                continue;
+            }
             switch (choice)
             {
                 case 0:
@@ -534,7 +542,20 @@ void menu1()
                     {
                         cout << "Khong co sach trong thu vien" << endl;
                         break;
-                        cout << "AAAAAA" << endl;
+                    }
+                    //Kiểm tra sách đó có thể cho mượn hay không
+                    bool canBorrowBook = true;
+                    for(int i = 0; i < listIdSach.size(); i++)
+                    {
+                        if(findBookByID(danhsach, listIdSach[i])->getStatus())
+                        {
+                            std::cout << "Sach da duoc cho muon!" << std::endl;
+                            canBorrowBook = false;
+                        }
+                    }
+                    if(canBorrowBook == false)
+                    {
+                        break;
                     }
                     phieuMuon.listIdSach = listIdSach;
                     phieuMuon.nhap();
@@ -553,8 +574,9 @@ void menu1()
                     oFile << phieuMuon.getStatus() << endl;
                     for(auto idSach : listIdSach)
                     {
-                        oFile << idSach << endl;
+                        oFile << idSach << " ";
                     }
+                    oFile << endl;
                     oFile.close();
                     //Cập nhật lại thông tin các sách vào thuviensach(do thay đổi status của sách)
                     oFile.open("..\\Data\\thuviensach.txt", ios::trunc);
@@ -585,10 +607,54 @@ void menu1()
                                 changeStatus(danhsach, idSach);
                             }
                             cout << "Tra sach thanh cong" << endl;
+                            for(Node* k = danhsach.head; k != NULL; k = k->next)
+                            {
+                                cout << k->data.getStatus() << " ";
+                            }
+                            cout << endl;
                             phieumuon.setStatus(0);
-                            break;
+                            //Xóa khỏi danh sách phiếu mượn
+                            //--Lấy index trước
+                            int indexT;
+                            for(int i = 0; i < listPhieuMuon.size(); i++)
+                            {
+                                if(listPhieuMuon[i].getID() == id)
+                                {
+                                    indexT = i;
+                                }
+                            }
+                            //--Xóa
+                            listPhieuMuon.erase(listPhieuMuon.begin() + indexT);
+                            //--Ghi lại vào file text
+                            oFile.open("..\\Data\\sachdamuon.txt", ios::trunc);
+                            for(int i = 0; i < listPhieuMuon.size(); i++)
+                            {
+                                oFile << listPhieuMuon[i].getID() << endl;
+                                oFile << listPhieuMuon[i].getNgayMuon() << endl;
+                                oFile << listPhieuMuon[i].getNgayTra() << endl;
+                                oFile << listPhieuMuon[i].getStatus() << endl;
+                                for(int j = 0; j < listPhieuMuon[i].listIdSach.size(); j++)
+                                {
+                                    oFile << listPhieuMuon[i].listIdSach[j] << " ";
+                                }
+                                oFile << endl;
+                            }
+                            oFile.close();
                         }
                     }
+                    //Trả thành công rồi thì ghi lại vào thuviensach(do thay đổi status)
+                    oFile.open("..\\Data\\thuviensach.txt", ios::trunc);
+                    oFile.clear();
+                    for(Node* k = danhsach.head; k != NULL; k = k->next)
+                    {
+                        oFile << k->data.getId() << endl;
+                        oFile << k->data.getName() << endl;
+                        oFile << k->data.getAuthor() << endl;
+                        oFile << k->data.getType() << endl;
+                        oFile << k->data.getPrice() << endl;
+                        oFile << k->data.getStatus() << endl;
+                    }
+                    oFile.close();
                     break;
                 }
                 case 3:
@@ -635,7 +701,7 @@ void menu1()
 void searchWindow()
 {
     sf::RenderWindow searchWindow(sf::VideoMode({1000, 1000}), "SEARCH RESULT", sf::Style::Close || sf::Style::Titlebar);
-    searchWindow.setFramerateLimit(30);
+    searchWindow.setFramerateLimit(10);
     //Font
     sf::Font font;
     if(!font.openFromFile("Arial.ttf"))
@@ -938,30 +1004,41 @@ int main()
         addBookToList(danhsach, sach);
     }
     iFile.close();
-    iFile.open("Data\\sachdamuon.txt");
-    while(true)
+    //Chuyển dữ liệu từ file sachdamuon.txt vào CTDL để làm việc
+
+    iFile.open("..\\Data\\sachdamuon.txt");
+    while (true)
     {
-        string id, ngayMuon, ngayTra;
-        std::vector<string> listID;
+        string id, ngayMuon, ngayTra, statusStr, listIdSachStr;
         bool status;
-        if (!getline(iFile, id)) break;      // Kiểm tra đọc thành công
-        if (!getline(iFile, ngayMuon)) break;
-        if (!getline(iFile, ngayTra)) break;
-        for(int i = 0; i < soSachDaMuon; i++)
+        std::vector<string> listIdSach;
+
+        if (!getline(iFile, id)) break;           // Đọc id phiếu mượn
+        if (!getline(iFile, ngayMuon)) break;     // Đọc ngày mượn
+        if (!getline(iFile, ngayTra)) break;      // Đọc ngày trả
+        if (!getline(iFile, statusStr)) break;    // Đọc trạng thái
+        status = (statusStr == "1");              // Chuyển trạng thái sang bool
+        if (!getline(iFile, listIdSachStr)) break; // Đọc danh sách id sách
+
+        // Tách các id sách từ chuỗi listIdSachStr
+        std::istringstream iss(listIdSachStr);
+        string idSach;
+        while (iss >> idSach)
         {
-            getline(iFile, listID[i]);
+            listIdSach.push_back(idSach);
         }
-        if (!(iFile >> status)) break;       // Đọc số bool
-        iFile.ignore();
-        PhieuMuon temp(id, ngayMuon, ngayTra, status, listID);
-        listPhieuMuon.push_back(temp);
+
+        // Tạo đối tượng PhieuMuon và thêm vào vector
+        PhieuMuon phieuMuon(id, ngayMuon, ngayTra, status, listIdSach);
+        listPhieuMuon.push_back(phieuMuon);
     }
-    
+    iFile.close();
     for(Node* k = danhsach.head; k != NULL; k = k->next)
     {
         count = count + 1;
     }
     std::cout << "So sach trong thu vien: " << count << std::endl;
+    std::cout << "So PM : " << listPhieuMuon.size() << std::endl;
     oFile.close();
     std::thread t0(loginTerminal);
     std::thread t1(mainWindow);
