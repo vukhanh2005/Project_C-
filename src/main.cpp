@@ -71,6 +71,13 @@ void mainWindow()
         sf::RenderWindow window(sf::VideoMode({1000, 1000}), "LIBRARY", sf::Style::Close);
         
         window.setFramerateLimit(10);
+        sf::Image _icon;
+        if (!_icon.loadFromFile("..\\assets\\image\\28.jpg"))
+        {
+            std::cout << "Failed to load icon" << std::endl;
+            return;
+        }
+        window.setIcon(_icon);
         //Font
         sf::Font font;
         if(!font.openFromFile("Arial.ttf"))
@@ -288,6 +295,14 @@ void windowPhieuMuon()
     {
         sf::RenderWindow windowPM(sf::VideoMode({1000, 1000}), "Phieu muon", sf::Style::Close);
         windowPM.setFramerateLimit(10);
+
+        sf::Image _icon;
+        if (!_icon.loadFromFile("..\\assets\\image\\28.jpg"))
+        {
+            std::cout << "Failed to load icon" << std::endl;
+            return;
+        }
+        windowPM.setIcon(_icon);
         //---Init Table-----
         //Line1
         sf::RectangleShape line1(sf::Vector2f(1000, 1));
@@ -452,6 +467,13 @@ void searchWindow()
 {
     sf::RenderWindow searchWindow(sf::VideoMode({1000, 1000}), "SEARCH RESULT", sf::Style::Close || sf::Style::Titlebar);
     searchWindow.setFramerateLimit(10);
+    sf::Image _icon;
+    if (!_icon.loadFromFile("..\\assets\\image\\28.jpg"))
+    {
+        std::cout << "Failed to load icon" << std::endl;
+        return;
+    }
+    searchWindow.setIcon(_icon);
     //Font
     sf::Font font;
     if(!font.openFromFile("Arial.ttf"))
