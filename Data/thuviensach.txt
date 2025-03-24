@@ -1,9 +1,3 @@
-H1
-Sach A
-Alan Niker
-Type Shi
-19999
-0
 H2
 Sach B
 Elon Musk
@@ -21,4 +15,16 @@ Sach D
 Phong Ma
 Type E
 19999
+0
+H5
+Dige
+Jin
+Hai
+19999
+0
+H6
+Okin
+Diger
+OKmi
+20000
 0

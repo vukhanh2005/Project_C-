@@ -447,6 +447,206 @@ void windowPhieuMuon()
         }
     }
 }
+//Luồng 3
+void searchWindow()
+{
+    sf::RenderWindow searchWindow(sf::VideoMode({1000, 1000}), "SEARCH RESULT", sf::Style::Close || sf::Style::Titlebar);
+    searchWindow.setFramerateLimit(10);
+    //Font
+    sf::Font font;
+    if(!font.openFromFile("Arial.ttf"))
+    {
+        std::cout << "Can't load font" << std::endl;
+        return;
+    }
+    std::vector<sf::RectangleShape> lines;
+    //Line
+    sf::RectangleShape line(sf::Vector2f(1000, 1));
+    line.setPosition({0, 100});
+    line.setFillColor(sf::Color::Blue);
+    //Line1
+    sf::RectangleShape line1(sf::Vector2f(1, 100));
+    line1.setPosition({100, 0});
+    line1.setFillColor(sf::Color::Blue);
+    //Line2
+    sf::RectangleShape line2(sf::Vector2f(1, 100));
+    line2.setPosition({300, 0});
+    line2.setFillColor(sf::Color::Blue);
+    //Line3
+    sf::RectangleShape line3(sf::Vector2f(1, 100));
+    line3.setPosition({500, 0});
+    line3.setFillColor(sf::Color::Blue);
+    //Line4
+    sf::RectangleShape line4(sf::Vector2f(1, 100));
+    line4.setPosition({700, 0});
+    line4.setFillColor(sf::Color::Blue);
+    //Line5
+    sf::RectangleShape line5(sf::Vector2f(1, 100));
+    line5.setPosition({900, 0});
+    line5.setFillColor(sf::Color::Blue);
+    //Push
+    lines.push_back(line1);
+    lines.push_back(line2);
+    lines.push_back(line3);
+    lines.push_back(line4);
+    lines.push_back(line5);
+    //Vector text
+    std::vector<sf::Text> texts;
+    //Text1
+    sf::Text text1(font, "ID", 20);
+    float x1 = text1.getGlobalBounds().size.x;
+    float y1 = text1.getGlobalBounds().size.y;
+    text1.setPosition({50 - x1/2, 50 - y1/2});
+    //Text2
+    sf::Text text2(font, "NAME", 20);
+    float x2 = text2.getGlobalBounds().size.x;
+    float y2 = text2.getGlobalBounds().size.y;
+    text2.setPosition({200 - x2/2, 50 - y2/2});
+    //Text3
+    sf::Text text3(font, "AUTHOR", 20);
+    float x3 = text3.getGlobalBounds().size.x;
+    float y3 = text3.getGlobalBounds().size.y;
+    text3.setPosition({400 - x3/2, 50 - y3/2});
+    //Text4
+    sf::Text text4(font, "TYPE", 20);
+    float x4 = text4.getGlobalBounds().size.x;
+    float y4 = text4.getGlobalBounds().size.y;
+    text4.setPosition({600 - x1/2, 50 - y1/2});
+    //Text5
+    sf::Text text5(font, "PRICE", 20);
+    float x5 = text5.getGlobalBounds().size.x;
+    float y5 = text5.getGlobalBounds().size.y;
+    text5.setPosition({800 - x5/2, 50 - y5/2});
+    //Text6
+    sf::Text text6(font, "STATUS", 20);
+    float x6 = text6.getGlobalBounds().size.x;
+    float y6 = text6.getGlobalBounds().size.y;
+    text6.setPosition({950 - x6/2, 50 - y6/2});
+    //Push
+    texts.push_back(text1);
+    texts.push_back(text2);
+    texts.push_back(text3);
+    texts.push_back(text4);
+    texts.push_back(text5);
+    texts.push_back(text6);
+    std::vector<Sach> dataBookInSearchList;
+    //Main loop
+    while(searchWindow.isOpen())
+    {
+        //Push Data
+        for(Node* k = searchList.head; k != NULL; k = k->next)
+        {
+            dataBookInSearchList.push_back(k->data);
+        }
+        while(const std::optional event = searchWindow.pollEvent())
+        {
+            if(event->is<sf::Event::Closed>())
+            {
+                searchWindow.close();
+                isMainWindowTurnOn = true;
+            }
+            else if(auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if(keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                {
+                    searchWindow.close();
+                    isMainWindowTurnOn = true;
+                }
+            }
+        }
+        if(isSearchWindowTurnOn == false)
+        {
+            searchWindow.setVisible(false);
+        }
+        else if(isSearchWindowTurnOn == true)
+        {
+            searchWindow.setVisible(true);
+        }
+        searchWindow.clear();
+        //Draw
+        for(const auto line : lines)
+        {
+            searchWindow.draw(line);
+        }
+        for(const auto text : texts)
+        {
+            searchWindow.draw(text);
+        }
+        searchWindow.draw(line);
+        //Data
+        std::vector<sf::Text> drawBooks;
+        //Vẽ
+        for (int i = 0; i < dataBookInSearchList.size(); i++)
+        {
+            Sach book = dataBookInSearchList[i];
+
+            std::vector<std::string> bookInfo =
+            {
+                book.getId(),
+                book.getName(),
+                book.getAuthor(),
+                book.getType(),
+                std::to_string(book.getPrice()),
+                book.getStatus() == 1 ? "Cant" : "Can"
+            };
+
+            for (size_t j = 0; j < bookInfo.size(); j++)
+            {
+                float jx, jy;
+                sf::Text text(font, bookInfo[j], 15);
+                if(j == 0)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({50 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 1)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({200 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 2)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({400 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 3)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({600 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 4)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({800 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+                if(j == 5)
+                {
+                    jx = text.getGlobalBounds().size.x;
+                    jy = text.getGlobalBounds().size.y;
+                    text.setPosition(sf::Vector2f({950 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
+                    text.setFillColor(sf::Color::White);
+                    drawBooks.push_back(text);
+                }
+            }
+        }
+        searchWindow.display();
+    }
+}
 //Luồng 4
 void menu1()
 {
@@ -661,16 +861,22 @@ void menu1()
                 {
                     isPhieuMuonWindowTurnOn = true;
                     isMainWindowTurnOn = false;
+                    std::thread t2(windowPhieuMuon);
+                    t2.join();
                     break;
                 }
                 case 4:
                 {
                     isSearchWindowTurnOn = true;
+                    std::thread t3(searchWindow);
+                    t3.join();
                     break;
                 }
                 case 5:
                 {
                     isSearchWindowTurnOn = true;
+                    std::thread t3(searchWindow);
+                    t3.join();
                     break;
                 }
                 case 6:
@@ -695,206 +901,6 @@ void menu1()
                     break;
             }
         } while(choice != 8);
-    }
-}
-//Luồng 3
-void searchWindow()
-{
-    sf::RenderWindow searchWindow(sf::VideoMode({1000, 1000}), "SEARCH RESULT", sf::Style::Close || sf::Style::Titlebar);
-    searchWindow.setFramerateLimit(10);
-    //Font
-    sf::Font font;
-    if(!font.openFromFile("Arial.ttf"))
-    {
-        std::cout << "Can't load font" << std::endl;
-        return;
-    }
-    std::vector<sf::RectangleShape> lines;
-    //Line
-    sf::RectangleShape line(sf::Vector2f(1000, 1));
-    line.setPosition({0, 100});
-    line.setFillColor(sf::Color::Blue);
-    //Line1
-    sf::RectangleShape line1(sf::Vector2f(1, 100));
-    line1.setPosition({100, 0});
-    line1.setFillColor(sf::Color::Blue);
-    //Line2
-    sf::RectangleShape line2(sf::Vector2f(1, 100));
-    line2.setPosition({300, 0});
-    line2.setFillColor(sf::Color::Blue);
-    //Line3
-    sf::RectangleShape line3(sf::Vector2f(1, 100));
-    line3.setPosition({500, 0});
-    line3.setFillColor(sf::Color::Blue);
-    //Line4
-    sf::RectangleShape line4(sf::Vector2f(1, 100));
-    line4.setPosition({700, 0});
-    line4.setFillColor(sf::Color::Blue);
-    //Line5
-    sf::RectangleShape line5(sf::Vector2f(1, 100));
-    line5.setPosition({900, 0});
-    line5.setFillColor(sf::Color::Blue);
-    //Push
-    lines.push_back(line1);
-    lines.push_back(line2);
-    lines.push_back(line3);
-    lines.push_back(line4);
-    lines.push_back(line5);
-    //Vector text
-    std::vector<sf::Text> texts;
-    //Text1
-    sf::Text text1(font, "ID", 20);
-    float x1 = text1.getGlobalBounds().size.x;
-    float y1 = text1.getGlobalBounds().size.y;
-    text1.setPosition({50 - x1/2, 50 - y1/2});
-    //Text2
-    sf::Text text2(font, "NAME", 20);
-    float x2 = text2.getGlobalBounds().size.x;
-    float y2 = text2.getGlobalBounds().size.y;
-    text2.setPosition({200 - x2/2, 50 - y2/2});
-    //Text3
-    sf::Text text3(font, "AUTHOR", 20);
-    float x3 = text3.getGlobalBounds().size.x;
-    float y3 = text3.getGlobalBounds().size.y;
-    text3.setPosition({400 - x3/2, 50 - y3/2});
-    //Text4
-    sf::Text text4(font, "TYPE", 20);
-    float x4 = text4.getGlobalBounds().size.x;
-    float y4 = text4.getGlobalBounds().size.y;
-    text4.setPosition({600 - x1/2, 50 - y1/2});
-    //Text5
-    sf::Text text5(font, "PRICE", 20);
-    float x5 = text5.getGlobalBounds().size.x;
-    float y5 = text5.getGlobalBounds().size.y;
-    text5.setPosition({800 - x5/2, 50 - y5/2});
-    //Text6
-    sf::Text text6(font, "STATUS", 20);
-    float x6 = text6.getGlobalBounds().size.x;
-    float y6 = text6.getGlobalBounds().size.y;
-    text6.setPosition({950 - x6/2, 50 - y6/2});
-    //Push
-    texts.push_back(text1);
-    texts.push_back(text2);
-    texts.push_back(text3);
-    texts.push_back(text4);
-    texts.push_back(text5);
-    texts.push_back(text6);
-    std::vector<Sach> dataBookInSearchList;
-    //Main loop
-    while(searchWindow.isOpen())
-    {
-        //Push Data
-        for(Node* k = searchList.head; k != NULL; k = k->next)
-        {
-            dataBookInSearchList.push_back(k->data);
-        }
-        while(const std::optional event = searchWindow.pollEvent())
-        {
-            if(event->is<sf::Event::Closed>())
-            {
-                searchWindow.close();
-                isMainWindowTurnOn = true;
-            }
-            else if(auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-            {
-                if(keyPressed->scancode == sf::Keyboard::Scancode::Escape)
-                {
-                    searchWindow.close();
-                    isMainWindowTurnOn = true;
-                }
-            }
-        }
-        if(isSearchWindowTurnOn == false)
-        {
-            searchWindow.setVisible(false);
-        }
-        else if(isSearchWindowTurnOn == true)
-        {
-            searchWindow.setVisible(true);
-        }
-        searchWindow.clear();
-        //Draw
-        for(const auto line : lines)
-        {
-            searchWindow.draw(line);
-        }
-        for(const auto text : texts)
-        {
-            searchWindow.draw(text);
-        }
-        searchWindow.draw(line);
-        //Data
-        std::vector<sf::Text> drawBooks;
-        //Vẽ
-        for (int i = 0; i < dataBookInSearchList.size(); i++)
-        {
-            Sach book = dataBookInSearchList[i];
-
-            std::vector<std::string> bookInfo =
-            {
-                book.getId(),
-                book.getName(),
-                book.getAuthor(),
-                book.getType(),
-                std::to_string(book.getPrice()),
-                book.getStatus() == 1 ? "Cant" : "Can"
-            };
-
-            for (size_t j = 0; j < bookInfo.size(); j++)
-            {
-                float jx, jy;
-                sf::Text text(font, bookInfo[j], 15);
-                if(j == 0)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({50 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-                if(j == 1)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({200 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-                if(j == 2)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({400 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-                if(j == 3)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({600 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-                if(j == 4)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({800 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-                if(j == 5)
-                {
-                    jx = text.getGlobalBounds().size.x;
-                    jy = text.getGlobalBounds().size.y;
-                    text.setPosition(sf::Vector2f({950 - jx/2, 120 + (float)(i * 20) - jy/2})); // Dịch chuyển từng dòng sách xuống dưới
-                    text.setFillColor(sf::Color::White);
-                    drawBooks.push_back(text);
-                }
-            }
-        }
-        searchWindow.display();
     }
 }
 //Luồng 5
@@ -1042,14 +1048,10 @@ int main()
     oFile.close();
     std::thread t0(loginTerminal);
     std::thread t1(mainWindow);
-    std::thread t2(windowPhieuMuon);
-    std::thread t3(searchWindow);
     std::thread t4(menu1);
     std::thread t5(menu2);
     t0.join();
     t1.join();
-    t2.join();
-    t3.join();
     t4.join();
     t5.join();
     return 0;
