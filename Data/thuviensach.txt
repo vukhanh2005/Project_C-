@@ -1,30 +1,6 @@
-H2
-Sach B
-Elon Musk
-Type Ni
-20000
-0
-H3
-Sach C
-Yi Long Ma
-Type Dic
-19999
-0
-H4
-Sach D
-Phong Ma
-Type E
-19999
-0
-H5
-Dige
-Jin
-Hai
-19999
-0
-H6
-Okin
-Diger
-OKmi
-20000
+H1
+NNV KKN
+NVK
+Se
+1000
 0

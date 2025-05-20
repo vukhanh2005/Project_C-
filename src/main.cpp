@@ -11,8 +11,9 @@
 #include <atomic>
 #include <mutex>
 #include <fstream>
+#include <sstream>
 using namespace std;
-int count = 0;
+int countBook = 0;
 int soSachDaMuon = 0;
 std::atomic<bool> isInMenu1;
 std::atomic<bool> isLoginSegment(true);
@@ -841,6 +842,7 @@ void menu1()
                             }
                             oFile.close();
                         }
+                        break;
                     }
                     //Trả thành công rồi thì ghi lại vào thuviensach(do thay đổi status)
                     oFile.open("..\\Data\\thuviensach.txt", ios::trunc);
@@ -991,6 +993,7 @@ void menu2()
 }
 int main()
 {
+    cout << "Hello" << endl;
     //Tải dữ liệu từ file vào danhsach
     iFile.open("..\\Data\\thuviensach.txt");
 
@@ -1041,9 +1044,9 @@ int main()
     iFile.close();
     for(Node* k = danhsach.head; k != NULL; k = k->next)
     {
-        count = count + 1;
+        countBook = countBook + 1;
     }
-    std::cout << "So sach trong thu vien: " << count << std::endl;
+    std::cout << "So sach trong thu vien: " << countBook << std::endl;
     std::cout << "So PM : " << listPhieuMuon.size() << std::endl;
     oFile.close();
     std::thread t0(loginTerminal);
